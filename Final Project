@@ -1,0 +1,141 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Queueue {
+    // atribut element untuk mengisi data di Queue
+    List<String[]> element;
+    int maxQueue;
+
+    public Queueue(int max) {
+        element = new ArrayList<>();
+        maxQueue = max;
+    }
+
+    // method untuk mengecek queue kosong atau tidak
+    public boolean isEmpty() {
+        return element.isEmpty();
+    }
+
+    // method untuk mengecek queue penuh atau tidak
+    public boolean isFull() {
+        return element.size() == maxQueue;
+    }
+
+    // method untuk menambahkan data ke queue
+    public void enqueue(String namaTugas, String matkul, String deadline) {
+        if (isFull()) {
+            System.out.println("Queue Overflow, tidak dapat mengisi data lagi");
+        } else {
+            String[] data = { namaTugas, matkul, deadline };
+            element.add(data);
+        }
+    }
+
+    // merhod untuk menghapus data di queue
+    public String[] dequeue() {
+        if (isEmpty()) {
+            System.out.println("Tugas Tidak Ada");
+            return null;
+        } else {
+            String[] data = element.remove(0);
+            return data;
+        }
+    }
+
+    // method untuk menampilkan data di queue
+    public void printQueue() {
+        if (!isEmpty()) {
+            System.out.println("Menampilkan urutan dari posisi tertinggi");
+            int count = 1;
+            for (String[] data : element) {
+                System.out.println("Tugas ke-" + count + ":");
+                System.out.println("Nama Tugas: " + data[0]);
+                System.out.println("Mata Kuliah: " + data[1]);
+                System.out.println("Deadline: " + data[2]);
+                System.out.println();
+                count++;
+            }
+        } else {
+            System.out.println("Tugas masih kosong");
+        }
+    }
+
+    // method pencarian untuk mencari data sesuai nama matkul
+    public List<String[]> searchByMatkul(String matkul) {
+        List<String[]> foundTasks = new ArrayList<>();
+        for (String[] data : element) {
+            if (data[1].equalsIgnoreCase(matkul)) {
+                foundTasks.add(data);
+            }
+        }
+        return foundTasks;
+    }
+
+    public static void main(String[] args) {
+        Queueue tugas = new Queueue(100);
+
+        while (true) {
+            System.out.println("==== Aplikasi Catatan Tugas ====\nMenu:");
+            System.out.println("1. Tambah Tugas");
+            System.out.println("2. Tampilkan Tugas");
+            System.out.println("3. Cari Tugas berdasarkan Mata Kuliah");
+            System.out.println("4. Tugas Selesai");
+            Scanner pilihan = new Scanner(System.in);
+            System.out.print("Masukkan pilihan : ");
+            int pilihan_user = pilihan.nextInt();
+            if (pilihan_user == 1) {
+                Scanner input = new Scanner(System.in);
+                System.out.print("Masukkan Nama Tugas: ");
+                String namaTugas = input.nextLine();
+                System.out.print("Masukkan Mata Kuliah: ");
+                String matkul = input.nextLine();
+                System.out.print("Masukkan Deadline: ");
+                String deadline = input.nextLine();
+                tugas.enqueue(namaTugas, matkul, deadline);
+            } else if (pilihan_user == 2) {
+                System.out.println("======== Catatan Tugas ==========");
+                tugas.printQueue();
+            } else if (pilihan_user == 3) {
+                System.out.println("====== Cari Tugas berdasarkan Mata Kuliah =======");
+                Scanner input = new Scanner(System.in);
+                System.out.print("Masukkan Mata Kuliah: ");
+                String matkul = input.nextLine();
+                List<String[]> foundTasks = tugas.searchByMatkul(matkul);
+                if (!foundTasks.isEmpty()) {
+                    System.out.println("Tugas dengan Mata Kuliah " + matkul + ":");
+                    int count = 1;
+                    for (String[] data : foundTasks) {
+                        System.out.println("Tugas ke-" + count + ":");
+                        System.out.println("Nama Tugas: " + data[0]);
+                        System.out.println("Mata Kuliah: " + data[1]);
+                        System.out.println("Deadline: " + data[2]);
+                        System.out.println();
+                        count++;
+                    }
+                } else {
+                    System.out.println("Tidak ditemukan tugas dengan Mata Kuliah " + matkul);
+                }
+            } else if (pilihan_user == 4) {
+                System.out.println("====== Tugas Selesai =======");
+                Scanner input = new Scanner(System.in);
+                while (true) {
+                    System.out.print("Apakah Tugas di depan sudah selesai (Y/N): ");
+                    String tugas_selesai = input.nextLine();
+                    if (tugas_selesai.equalsIgnoreCase("Y")) {
+                        String[] dequeuedData = tugas.dequeue();
+                        if (dequeuedData != null) {
+                            System.out.println("Tugas Selesai:");
+                            System.out.println("Nama Tugas: " + dequeuedData[0]);
+                            System.out.println("Mata Kuliah: " + dequeuedData[1]);
+                            System.out.println("Deadline: " + dequeuedData[2]);
+                            System.out.println();
+                        }
+                    } else if (tugas_selesai.equalsIgnoreCase("N")) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
